@@ -53,6 +53,7 @@ MAKE_HOOK_MATCH(StandardLevelDetailViewController_DidActivate, &GlobalNamespace:
         auto imageView = imageTransform->GetComponent<HMUI::ImageView*>();
         imageView->set_color(UnityEngine::Color(UnityEngine::Color(0.5f, 0.5f, 0.5f, 1)));
         imageView->set_preserveAspect(false);
+        imageView->skew = 0.0f;
     }
     catch (...) {
 
