@@ -7,6 +7,7 @@
     "version": "0.1.2",
     "packageId": "com.beatgames.beatsaber",
     "packageVersion": "1.17.0",
+    "coverImage": "imagecoverexpander.png",
     "description": "Beat Saber mod that expands the artwork cover of a song. Quest Port of the PC mod by Spooky_ and PixelBoom",
     "modFiles": [
         "libImageCoverExpander.so"
