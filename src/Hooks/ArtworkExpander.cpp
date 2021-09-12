@@ -1,12 +1,9 @@
 #include "main.hpp"
-#include "IHook.hpp"
-using namespace ImageCoverExpander;
 
-#include "Hooks/StandardLevelDetailViewController_DidActivate_Hook.hpp"
+#include "Hooks/ArtworkExpander.hpp"
 using namespace ImageCoverExpander::Hooks;
 
 #include "GlobalNamespace/StandardLevelDetailViewController.hpp"
-#include "GlobalNamespace/MainMenuViewController.hpp"
 using namespace GlobalNamespace;
 
 #include "UnityEngine/GameObject.hpp"
@@ -14,12 +11,18 @@ using namespace GlobalNamespace;
 #include "UnityEngine/RectTransform.hpp"
 using namespace UnityEngine;
 
+#include "UnityEngine/UI/Button.hpp"
+using namespace UnityEngine::UI;
+
 #include "HMUI/ImageView.hpp"
 using namespace HMUI;
 
-std::string StandardLevelDetailViewController_DidActivate_Hook::GetName() {
-    return "StandardLevelDetailViewController_DidActivate";
-}
+// best library evvar
+#include "sombrero/shared/Vector2Utils.hpp"
+#include "sombrero/shared/Vector3Utils.hpp"
+#include "sombrero/shared/ColorUtils.hpp"
+using namespace Sombrero; // very cool fern <3
+
 
 #define ARTWORK_ERROR(logger, transform) \
     logger.error("Error changing artwork fields for %s", to_utf8(csstrtostr(levelBarTransform->get_name())).c_str()); \
@@ -34,22 +37,19 @@ MAKE_HOOK_MATCH(StandardLevelDetailViewController_DidActivate, &GlobalNamespace:
 
     // oh boy
 
-    auto imageTransform = levelBarTransform->Find(il2cpp_utils::newcsstr("SongArtwork"))->GetComponent<RectTransform*>();
+    auto* imageTransform = levelBarTransform->Find(il2cpp_utils::newcsstr("SongArtwork"))->GetComponent<RectTransform*>();
     if (!imageTransform) {ARTWORK_ERROR(getLogger(), levelBarTransform)}
-    imageTransform->set_sizeDelta(Vector2(70.5f, 58.0f));
-    imageTransform->set_localPosition(Vector3(-34.4f, -56.0f, 0.0f));
+    imageTransform->set_sizeDelta(FastVector2(70.5f, 58.0f));
+    imageTransform->set_localPosition(FastVector3(-34.4f, -56.0f, 0.0f));
     imageTransform->SetAsFirstSibling();
 
-    auto imageView = imageTransform->GetComponent<ImageView*>();
+    auto* imageView = imageTransform->GetComponent<ImageView*>();
     if (!imageView) {ARTWORK_ERROR(getLogger(), levelBarTransform)}
-    imageView->set_color(Color(0.5f, 0.5f, 0.5f, 1));
+    imageView->set_color(FastColor(0.5f, 0.5f, 0.5f, 1));
     imageView->set_preserveAspect(false);
     imageView->skew = 0.0f;
-
-
 }
 
-void StandardLevelDetailViewController_DidActivate_Hook::InstallHooks() {
-    INSTALL_HOOK(getLogger(), StandardLevelDetailViewController_DidActivate);
-    getLogger().info("Installed %s Hook", GetName().c_str());
+void ArtworkExpander::AddHooks() {
+    INSTALL_HOOK(getLogger(), StandardLevelDetailViewController_DidActivate)
 }

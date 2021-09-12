@@ -2,7 +2,7 @@
 #include "IHook.hpp"
 using namespace ImageCoverExpander;
 
-#include "Hooks/StandardLevelDetailViewController_DidActivate_Hook.hpp"
+#include "Hooks/ArtworkExpander.hpp"
 using namespace ImageCoverExpander::Hooks;
 
 #include "custom-types/shared/register.hpp"
@@ -21,12 +21,12 @@ Configuration& getConfig() {
 
 // Returns a logger, useful for printing debug messages
 Logger& getLogger() {
-    static Logger* logger = new Logger(modInfo);
+    static auto* logger = new Logger(modInfo);
     return *logger;
 }
 
 // Called at the early stages of game loading
-extern "C" void setup(ModInfo& info) {
+extern "C" [[maybe_unused]] void setup(ModInfo& info) {
     info.id = ID;
     info.version = VERSION;
     modInfo = info;
@@ -35,17 +35,17 @@ extern "C" void setup(ModInfo& info) {
     getLogger().info("Completed setup!");
 }
 
-void InstallHooks() {
-    (new StandardLevelDetailViewController_DidActivate_Hook())->InstallHooks();
-}
-
 // Called later on in the game loading - a good time to install function hooks
 extern "C" void load() {
     il2cpp_functions::Init();
-
     Register::AutoRegister(); // Custom Types
 
+    new ArtworkExpander("ArtworkExpander");
+
     getLogger().info("Installing hooks...");
-    InstallHooks();
-    getLogger().info("Installed all hooks!");
+    if (!IHook::InstallHooks()) {
+        getLogger().info("Failed to install hooks.");
+    } else {
+        getLogger().info("Finished installing hooks!");
+    }
 }

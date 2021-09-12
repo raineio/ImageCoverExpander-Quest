@@ -3,7 +3,7 @@
     {
       "defines": [
         "ID=\"ImageCoverExpander\"",
-        "VERSION=\"0.1.2\"",
+        "VERSION=\"0.1.4\"",
         "__GNUC__",
         "__aarch64__"
       ],
