@@ -26,7 +26,8 @@ Logger& getLogger() {
 }
 
 // Called at the early stages of game loading
-extern "C" [[maybe_unused]] void setup(ModInfo& info) {
+extern "C" void setup(ModInfo& info) {
+    std::string ID = "ImageCoverExpander";
     info.id = ID;
     info.version = VERSION;
     modInfo = info;

@@ -1,28 +1,92 @@
-$so_stopwatch =  [system.diagnostics.stopwatch]::StartNew()
-$qmod_stopwatch = [system.diagnostics.stopwatch]::StartNew()
+Param(
+    [String] $qmodname="",
 
-# Builds a .qmod file for loading with QuestPatcher
-$NDKPath = Get-Content $PSScriptRoot/ndkpath.txt
+    [Parameter(Mandatory=$false)]
+    [Switch] $clean,
 
-$Version = "0.1.4"
+    [Parameter(Mandatory=$false)]
+    [Switch] $help
+)
 
-$buildScript = "$NDKPath/build/ndk-build"
-if (-not ($PSVersionTable.PSEdition -eq "Core")) {
-    $buildScript += ".cmd"
+if ($help -eq $true) {
+    echo "`"BuildQmod <qmodName>`" - Copiles your mod into a `".so`" or a `".a`" library"
+    echo "`n-- Parameters --`n"
+    echo "qmodName `t The file name of your qmod"
+
+    echo "`n-- Arguments --`n"
+
+    echo "-Clean `t`t Performs a clean build on both your library and the qmod"
+
+    exit
 }
 
-$ArchiveName = "ImageCoverExpander-$Version.qmod"
-$TempArchiveName = "ImageCoverExpander-$Version.qmod.zip"
+if ($qmodName -eq "")
+{
+    echo "Give a proper qmod name and try again"
+    exit
+}
 
-& $buildScript NDK_PROJECT_PATH=$PSScriptRoot APP_BUILD_SCRIPT=$PSScriptRoot/Android.mk NDK_APPLICATION_MK=$PSScriptRoot/Application.mk
+& $PSScriptRoot/build.ps1 -clean:$clean
 
-$so_stopwatch.Stop()
-$so_timeElapsed = [math]::Round($so_stopwatch.Elapsed.TotalSeconds,3)
-echo "SO build completed in $so_timeElapsed seconds"
+if ($LASTEXITCODE -ne 0) {
+    echo "Failed to build, exiting..."
+    exit $LASTEXITCODE
+}
 
-Compress-Archive -Path "./libs/arm64-v8a/libImageCoverExpander.so", "./libs/arm64-v8a/libcodegen_0_13_1.so", "./libs/arm64-v8a/libbeatsaber-hook_2_3_0.so", "imagecoverexpander.png", "./mod.json" -DestinationPath $TempArchiveName -Force
-Move-Item $TempArchiveName $ArchiveName -Force
+echo "Creating qmod from mod.json"
 
-$qmod_stopwatch.Stop()
-$qmod_timeElapsed = [math]::Round($qmod_stopwatch.Elapsed.TotalSeconds,3)
-echo "QMOD build completed in $qmod_timeElapsed seconds"
+$schemaUrl = "https://raw.githubusercontent.com/Lauriethefish/QuestPatcher.QMod/main/QuestPatcher.QMod/Resources/qmod.schema.json"
+Invoke-WebRequest $schemaUrl -OutFile ./mod.schema.json
+
+$mod = "./mod.json"
+$schema = "./mod.schema.json"
+$modJsonRaw = Get-Content $mod -Raw
+$modJson = $modJsonRaw | ConvertFrom-Json
+$modSchemaRaw = Get-Content $schema -Raw
+
+Remove-Item ./mod.schema.json
+
+echo "Validating mod.json..."
+if(!($modJsonRaw | Test-Json -Schema $modSchemaRaw)) {
+    exit
+}
+
+$filelist = @($mod)
+
+$cover = "./" + $modJson.coverImage
+if ((-not ($cover -eq "./")) -and (Test-Path $cover))
+{ 
+    $filelist += ,$cover
+}
+
+foreach ($mod in $modJson.modFiles)
+{
+    $path = "./build/" + $mod
+    if (-not (Test-Path $path))
+    {
+        $path = "./extern/libs/" + $mod
+    }
+    $filelist += $path
+}
+
+foreach ($lib in $modJson.libraryFiles)
+{
+    $path = "./extern/libs/" + $lib
+    if (-not (Test-Path $path))
+    {
+        $path = "./build/" + $lib
+    }
+    $filelist += $path
+}
+
+$zip = $qmodName + ".zip"
+$qmod = $qmodName + ".qmod"
+
+if ((-not ($clean.IsPresent)) -and (Test-Path $qmod))
+{
+    echo "Making Clean Qmod"
+    Move-Item $qmod $zip -Force
+}
+
+Compress-Archive -Path $filelist -DestinationPath $zip -Update
+Move-Item $zip $qmod -Force
