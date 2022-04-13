@@ -1,7 +1,4 @@
 #include "main.hpp"
-#include "HookingUtility.hpp"
-using namespace ImageCoverExpander;
-
 #include "custom-types/shared/register.hpp"
 using namespace custom_types;
 
@@ -23,7 +20,6 @@ using namespace HMUI;
 #include "sombrero/shared/Vector2Utils.hpp"
 #include "sombrero/shared/Vector3Utils.hpp"
 #include "sombrero/shared/ColorUtils.hpp"
-#include "HookingUtility.hpp"
 
 using namespace Sombrero; // very cool fern <3
 
