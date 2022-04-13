@@ -39,17 +39,6 @@ $schemaUrl = "https://raw.githubusercontent.com/Lauriethefish/QuestPatcher.QMod/
 Invoke-WebRequest $schemaUrl -OutFile ./mod.schema.json
 
 $mod = "./mod.json"
-$schema = "./mod.schema.json"
-$modJsonRaw = Get-Content $mod -Raw
-$modJson = $modJsonRaw | ConvertFrom-Json
-$modSchemaRaw = Get-Content $schema -Raw
-
-Remove-Item ./mod.schema.json
-
-echo "Validating mod.json..."
-if(!($modJsonRaw | Test-Json -Schema $modSchemaRaw)) {
-    exit
-}
 
 $filelist = @($mod)
 
