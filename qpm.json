@@ -4,14 +4,16 @@
   "info": {
     "name": "ImageCoverExpander",
     "id": "ImageCoverExpander",
-    "version": "0.1.5",
-    "url": "https://github.com/MillzyDev/BeatSaber-ImageCoverExpander",
-    "additionalData": {}
+    "version": "0.2.0",
+    "url": null,
+    "additionalData": {
+      "overrideSoName": "libImageCoverExpander.so"
+    }
   },
   "dependencies": [
     {
       "id": "beatsaber-hook",
-      "versionRange": "*",
+      "versionRange": "^3.8.0",
       "additionalData": {
         "extraFiles": [
           "src/inline-hook"
@@ -19,18 +21,18 @@
       }
     },
     {
+      "id": "modloader",
+      "versionRange": "=1.2.3",
+      "additionalData": {}
+    },
+    {
       "id": "codegen",
-      "versionRange": "*",
+      "versionRange": "^0.22.0",
       "additionalData": {}
     },
     {
       "id": "custom-types",
-      "versionRange": "*",
-      "additionalData": {}
-    },
-    {
-      "id": "sombrero",
-      "versionRange": "*",
+      "versionRange": "^0.15.9",
       "additionalData": {}
     }
   ],

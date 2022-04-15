@@ -1,6 +1,6 @@
 #include "main.hpp"
+
 #include "custom-types/shared/register.hpp"
-using namespace custom_types;
 
 #include "GlobalNamespace/StandardLevelDetailViewController.hpp"
 using namespace GlobalNamespace;
@@ -8,6 +8,9 @@ using namespace GlobalNamespace;
 #include "UnityEngine/GameObject.hpp"
 #include "UnityEngine/Transform.hpp"
 #include "UnityEngine/RectTransform.hpp"
+#include "UnityEngine/Vector2.hpp"
+#include "UnityEngine/Vector3.hpp"
+#include "UnityEngine/Color.hpp"
 using namespace UnityEngine;
 
 #include "UnityEngine/UI/Button.hpp"
@@ -15,15 +18,6 @@ using namespace UnityEngine::UI;
 
 #include "HMUI/ImageView.hpp"
 using namespace HMUI;
-
-// best library evvar
-#include "sombrero/shared/Vector2Utils.hpp"
-#include "sombrero/shared/Vector3Utils.hpp"
-#include "sombrero/shared/ColorUtils.hpp"
-
-using namespace Sombrero; // very cool fern <3
-
-#include <array>
 
 static ModInfo modInfo; // Stores the ID and version of our mod, and is sent to the modloader upon startup
 
@@ -36,36 +30,37 @@ Configuration& getConfig() {
 
 // Returns a logger, useful for printing debug messages
 Logger& getLogger() {
-    static auto* logger = new Logger(modInfo);
+    static Logger* logger = new Logger(modInfo);
     return *logger;
 }
 
-MAKE_HOOK_MATCH(StandardLevelDetailViewController_DidActivate,
+MAKE_HOOK_MATCH(m_DidActivate,
                 &GlobalNamespace::StandardLevelDetailViewController::DidActivate,
                 void,
                 GlobalNamespace::StandardLevelDetailViewController* self,
                 bool firstActivation,
                 bool addedToHeirarchy,
                 bool screenSystemEnabling) {
-    StandardLevelDetailViewController_DidActivate(self, firstActivation, addedToHeirarchy, screenSystemEnabling);
 
-    auto ImageCoverTransform = self
-            ->get_transform()->Find("LevelDetail/LevelBarBig/SongArtwork")->GetComponent<RectTransform*>();
+    m_DidActivate(self, firstActivation, addedToHeirarchy, screenSystemEnabling);
 
-    ImageCoverTransform->set_sizeDelta(FastVector2(70.5f, 58.0f));
-    ImageCoverTransform->set_localPosition(FastVector3(-34.4f, -56.0f, 0.0f));
-    ImageCoverTransform->SetAsFirstSibling();
 
-    auto* imageView = ImageCoverTransform->GetComponent<ImageView*>();
-    imageView->set_color(FastColor(0.5f, 0.5f, 0.5f, 1));
+    auto* imageCoverTransform = self->get_transform()->Find("LevelDetail/LevelBarBig/SongArtwork")->GetComponent<RectTransform*>();
+
+    imageCoverTransform->set_sizeDelta(Vector2(70.5, 58.0));
+    imageCoverTransform->set_localPosition(Vector3(-34.4, -56, 0));
+    imageCoverTransform->SetAsFirstSibling();
+
+    auto* imageView = imageCoverTransform->GetComponent<ImageView*>();
+
+    imageView->set_color(Color(0.5, 0.5, 0.5, 1));
     imageView->set_preserveAspect(false);
     imageView->dyn__skew() = 0.0f;
 }
 
 // Called at the early stages of game loading
 extern "C" void setup(ModInfo& info) {
-    std::string ID = "ImageCoverExpander";
-    info.id = ID;
+    info.id = MOD_ID;
     info.version = VERSION;
     modInfo = info;
 	
@@ -76,7 +71,8 @@ extern "C" void setup(ModInfo& info) {
 // Called later on in the game loading - a good time to install function hooks
 extern "C" void load() {
     il2cpp_functions::Init();
-    Register::AutoRegister(); // Custom Types
 
-    INSTALL_HOOK(getLogger(), StandardLevelDetailViewController_DidActivate);
+    getLogger().info("Installing hooks...");
+    INSTALL_HOOK(getLogger(), m_DidActivate);
+    getLogger().info("Installed all hooks!");
 }

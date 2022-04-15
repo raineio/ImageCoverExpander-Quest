@@ -2,25 +2,20 @@
   "_QPVersion": "0.1.1",
   "name": "ImageCoverExpander",
   "id": "ImageCoverExpander",
-  "author": "Millzy & Raine",
-  "version": "0.1.3",
+  "author": "Raine & Millzy",
+  "version": "0.2.0",
   "packageId": "com.beatgames.beatsaber",
   "packageVersion": "1.21.0",
-  "description": "ImageCoverExpander, version 0.1.3!",
+  "description": "Expands the song artwork to cover the right side of the level select",
   "dependencies": [
     {
-      "version": "*",
-      "id": "custom-types",
-      "downloadIfMissing": "https://github.com/sc2ad/Il2CppQuestTypePatching/releases/download/v0.15.9/CustomTypes.qmod"
-    },
-    {
-      "version": "*",
+      "version": "^0.22.0",
       "id": "codegen",
       "downloadIfMissing": "https://github.com/sc2ad/BeatSaber-Quest-Codegen/releases/download/v0.22.0/Codegen.qmod"
     }
   ],
   "modFiles": [
-    "libImageCoverExpander_0_1_3.so"
+    "libImageCoverExpander.so"
   ],
   "libraryFiles": [
     "libbeatsaber-hook_3_8_1.so"

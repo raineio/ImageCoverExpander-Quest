@@ -3,17 +3,20 @@
     {
       "defines": [
         "ID=\"ImageCoverExpander\"",
-        "VERSION=\"0.1.4\"",
+        "VERSION=\"0.1.0\"",
         "__GNUC__",
         "__aarch64__"
       ],
       "includePath": [
-        "${workspaceFolder}/**",
-        "${workspaceFolder}/shared",
-        "${workspaceFolder}/include",
-        "${workspaceFolder}/extern/**",
-        "${workspaceFolder}/extern/libil2cpp/il2cpp/libil2cpp",
-        "C:/Users/USER/AppData/Roaming/Android/NDK/**"
+        "${workspaceFolder}/extern/includes/libil2cpp/il2cpp/libil2cpp", 
+        "${workspaceFolder}/extern/includes/codegen/include", 
+        "${workspaceFolder}/extern/includes", 
+        "${workspaceFolder}/include", 
+        "${workspaceFolder}/shared", 
+        "${workspaceFolder}",
+        
+        "/**",
+        "${default}"
       ],
       "name": "Quest",
       "cStandard": "c11",

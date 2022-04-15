@@ -28,7 +28,7 @@ if ($clean.IsPresent)
 if (($clean.IsPresent) -or (-not (Test-Path -Path "build")))
 {
     $out = new-item -Path build -ItemType Directory
-}
+} 
 
 cd build
 & cmake -G "Ninja" -DCMAKE_BUILD_TYPE="RelWithDebInfo" ../
