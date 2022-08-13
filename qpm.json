@@ -4,7 +4,7 @@
   "info": {
     "name": "ImageCoverExpander",
     "id": "ImageCoverExpander",
-    "version": "0.2.0",
+    "version": "0.2.2",
     "url": null,
     "additionalData": {
       "overrideSoName": "libImageCoverExpander.so"
@@ -13,7 +13,7 @@
   "dependencies": [
     {
       "id": "beatsaber-hook",
-      "versionRange": "^3.8.0",
+      "versionRange": "^3.10.0",
       "additionalData": {
         "extraFiles": [
           "src/inline-hook"
@@ -26,13 +26,13 @@
       "additionalData": {}
     },
     {
-      "id": "codegen",
-      "versionRange": "^0.22.0",
+      "id": "custom-types",
+      "versionRange": "^0.15.18",
       "additionalData": {}
     },
     {
-      "id": "custom-types",
-      "versionRange": "^0.15.9",
+      "id": "codegen",
+      "versionRange": "^0.26.0",
       "additionalData": {}
     }
   ],

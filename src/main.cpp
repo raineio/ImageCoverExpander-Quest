@@ -55,12 +55,12 @@ MAKE_HOOK_MATCH(m_DidActivate,
 
     imageView->set_color(Color(0.5, 0.5, 0.5, 1));
     imageView->set_preserveAspect(false);
-    imageView->dyn__skew() = 0.0f;
+    imageView->skew = 0.0f;
 }
 
 // Called at the early stages of game loading
 extern "C" void setup(ModInfo& info) {
-    info.id = MOD_ID;
+    info.id = "ice";
     info.version = VERSION;
     modInfo = info;
 	
@@ -74,5 +74,4 @@ extern "C" void load() {
 
     getLogger().info("Installing hooks...");
     INSTALL_HOOK(getLogger(), m_DidActivate);
-    getLogger().info("Installed all hooks!");
 }
